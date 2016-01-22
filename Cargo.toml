@@ -1,0 +1,6 @@
+[package]
+name = "objq"
+version = "0.1.0"
+authors = ["Satoshi Amemiya"]
+
+[dependencies]
