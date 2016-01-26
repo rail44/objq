@@ -4,3 +4,10 @@ version = "0.1.0"
 authors = ["Satoshi Amemiya"]
 
 [dependencies]
+serde = "*"
+serde_json = "*"
+serde_macros = "*"
+docopt = "*"
+docopt_macros = "*"
+rustc-serialize = "*"
+peg = "*"
