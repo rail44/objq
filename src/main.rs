@@ -11,11 +11,11 @@ use std::io;
 use std::process;
 use serde_json::value::Value;
 use query::{Queryable, Query};
-use format::InputFormat;
+use input::InputFormat;
 use output::OutputFormat;
 
 mod query;
-mod format;
+mod input;
 mod output;
 
 docopt!(Args derive Debug, "
