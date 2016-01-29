@@ -10,10 +10,12 @@ use std::io;
 use std::process;
 use serde_json::value::Value;
 use query::{Queryable, Query};
-use format::{OutputFormat, InputFormat};
+use format::InputFormat;
+use output::OutputFormat;
 
 mod query;
 mod format;
+mod output;
 
 docopt!(Args derive Debug, "
 objq
