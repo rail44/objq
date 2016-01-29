@@ -1,4 +1,4 @@
-#![feature(custom_derive, plugin)]
+#![feature(custom_derive, plugin, slice_patterns)]
 #![plugin(serde_macros, docopt_macros, peg_syntax_ext)]
 
 extern crate serde;
@@ -12,7 +12,7 @@ use std::process;
 use serde_json::value::Value;
 use query::{Queryable, Query};
 use input::InputFormat;
-use output::OutputFormat;
+use output::{OutputFormat, Output};
 
 mod query;
 mod input;
