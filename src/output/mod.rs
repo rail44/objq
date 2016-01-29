@@ -3,6 +3,8 @@ use rustc_serialize;
 use serde_json;
 use serde_json::value::Value;
 
+mod yaml;
+
 #[derive(Debug)]
 pub enum OutputFormat {
     Json,
@@ -13,7 +15,7 @@ impl OutputFormat {
    pub fn output<T: Write>(self, w: &mut T, value: &Value) -> Result<(), serde_json::Error> {
        match self {
            OutputFormat::Json => serde_json::to_writer_pretty(w, value),
-           OutputFormat::Yaml => serde_json::to_writer_pretty(w, value),
+           OutputFormat::Yaml => yaml::output(w, value),
        }
    }
 }

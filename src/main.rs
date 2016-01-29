@@ -5,6 +5,7 @@ extern crate serde;
 extern crate serde_json;
 extern crate docopt;
 extern crate rustc_serialize;
+extern crate yaml_rust;
 
 use std::io;
 use std::process;
