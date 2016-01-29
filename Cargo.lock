@@ -30,7 +30,7 @@ dependencies = [
 
 [[package]]
 name = "aster"
-version = "0.10.0"
+version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -62,7 +62,7 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.5"
+version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -70,7 +70,7 @@ name = "memchr"
 version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "libc 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -102,7 +102,7 @@ name = "quasi_codegen"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "aster 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "aster 0.10.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -119,7 +119,7 @@ version = "0.3.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "advapi32-sys 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "libc 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -164,7 +164,7 @@ name = "serde_codegen"
 version = "0.6.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "aster 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "aster 0.10.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "clippy 0.0.37 (registry+https://github.com/rust-lang/crates.io-index)",
  "quasi 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "quasi_macros 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
