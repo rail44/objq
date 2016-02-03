@@ -17,11 +17,21 @@ pub fn to_json_value(yaml: Yaml) -> Value {
             Value::Array(json_value_arr)
         },
         Yaml::Hash(b_tree_map) => {
-            let iter = b_tree_map.into_iter().map(|(k, v)| (k.as_str().unwrap().to_string(), to_json_value(v)));
+            let iter = b_tree_map.into_iter().map(|(k, v)| (to_string(k), to_json_value(v)));
             Value::Object(BTreeMap::from_iter(iter))
         },
         Yaml::Alias(_) => unimplemented!(),
         Yaml::BadValue => panic!(),
+    }
+}
+
+fn to_string(yaml: Yaml) -> String {
+    match yaml {
+        Yaml::Boolean(b) => b.to_string(),
+        Yaml::Integer(i) => i.to_string(),
+        Yaml::Real(f_str) => f_str,
+        Yaml::String(s) => s,
+        _ => unimplemented!(),
     }
 }
 
