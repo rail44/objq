@@ -1,7 +1,7 @@
+use std::io;
 use std::io::Write;
 use std::collections::BTreeMap;
 use std::iter::FromIterator;
-use serde_json;
 use serde_json::value::Value as JsonValue;
 use yaml_rust::{Yaml as YamlValue, YamlEmitter};
 
@@ -14,11 +14,15 @@ impl Yaml {
     }
 }
 
+pub type Error = io::Error;
+
 impl super::Output for Yaml {
-    fn output<T: Write>(self, w: &mut T, value: &JsonValue) -> Result<(), serde_json::Error> {
+    type Error = Error;
+
+    fn output<T: Write>(self, w: &mut T, value: &JsonValue) -> Result<(), Self::Error> {
         let mut out = String::new();
         YamlEmitter::new(&mut out).dump(&to_yaml_value(value)).unwrap_or_else(|_| unreachable!());
-        write!(w, "{}", out).map_err(|e| serde_json::Error::IoError(e))
+        write!(w, "{}", out)
     }
 }
 

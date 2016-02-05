@@ -13,13 +13,17 @@ impl Json {
     }
 }
 
+pub type Error = serde_json::Error;
+
 impl super::Output for Json {
-   fn output<T: Write>(self, w: &mut T, value: &Value) -> Result<(), serde_json::Error> {
-       match self {
-           Json { pretty: b } => match b {
-               true => serde_json::to_writer_pretty(w, value),
-               false => serde_json::to_writer(w, value),
-           }
-       }
-   }
+    type Error = Error;
+
+    fn output<T: Write>(self, w: &mut T, value: &Value) -> Result<(), Self::Error> {
+        match self {
+            Json { pretty: b } => match b {
+                true => serde_json::to_writer_pretty(w, value),
+                false => serde_json::to_writer(w, value),
+            }
+        }
+    }
 }

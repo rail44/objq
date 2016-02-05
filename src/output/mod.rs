@@ -1,31 +1,38 @@
 use std::io::Write;
 use rustc_serialize;
-use serde_json;
 use serde_json::value::Value;
-
-use self::yaml::Yaml;
-use self::json::Json;
 
 mod yaml;
 mod json;
+mod msgpack;
 
 #[derive(Debug)]
 pub enum OutputFormat {
-    Json(Json),
-    Yaml(Yaml),
+    Json(json::Json),
+    Yaml(yaml::Yaml),
+    MessagePack(msgpack::MessagePack),
+}
+
+pub enum Error {
+    Json(json::Error),
+    Yaml(yaml::Error),
+    MessagePack(msgpack::Error),
 }
 
 pub trait Output {
-   fn output<T: Write>(self, w: &mut T, value: &Value) -> Result<(), serde_json::Error>;
+    type Error;
+    fn output<T: Write>(self, w: &mut T, value: &Value) -> Result<(), Self::Error>;
 }
 
 impl Output for OutputFormat {
-   fn output<T: Write>(self, w: &mut T, value: &Value) -> Result<(), serde_json::Error> {
-       match self {
-           OutputFormat::Json(json) => json.output(w, value),
-           OutputFormat::Yaml(yaml) => yaml.output(w, value),
-       }
-   }
+    type Error = Error;
+    fn output<T: Write>(self, w: &mut T, value: &Value) -> Result<(), Self::Error> {
+        match self {
+            OutputFormat::Json(json) => json.output(w, value).map_err(|e| Error::Json(e)),
+            OutputFormat::Yaml(yaml) => yaml.output(w, value).map_err(|e| Error::Yaml(e)),
+            OutputFormat::MessagePack(msgpack) => msgpack.output(w, value).map_err(|e| Error::MessagePack(e)),
+        }
+    }
 }
 
 impl rustc_serialize::Decodable for OutputFormat {
@@ -35,9 +42,10 @@ impl rustc_serialize::Decodable for OutputFormat {
                 let mut output_args: Vec<&str> = string.split(':').collect();
                 output_args.reverse();
                 match output_args.pop().unwrap() {
-                    "json" => Ok(OutputFormat::Json(Json::new(output_args))),
-                    "yaml" => Ok(OutputFormat::Yaml(Yaml::new(output_args))),
-                    "" => Ok(OutputFormat::Json(Json::new(output_args))),
+                    "json" => Ok(OutputFormat::Json(json::Json::new(output_args))),
+                    "yaml" => Ok(OutputFormat::Yaml(yaml::Yaml::new(output_args))),
+                    "msgpack" => Ok(OutputFormat::MessagePack(msgpack::MessagePack::new(output_args))),
+                    "" => Ok(OutputFormat::Json(json::Json::new(output_args))),
                     _ => Err(d.error(format!("Unsupported output format \"{}\"", string).as_str())),
                 }
             },
