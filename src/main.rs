@@ -12,7 +12,7 @@ use std::io;
 use std::process;
 use serde_json::value::Value;
 use query::{Queryable, Query};
-use input::InputFormat;
+use input::{InputFormat, Input};
 use output::{OutputFormat, Output};
 
 mod query;
