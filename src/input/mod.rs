@@ -5,17 +5,20 @@ use serde_json::value::Value;
 
 mod json;
 mod yaml;
+mod msgpack;
 
 #[derive(Debug)]
 pub enum InputFormat {
     Json(json::Json),
     Yaml(yaml::Yaml),
+    MessagePack(msgpack::MessagePack),
 }
 
 #[derive(Debug)]
 pub enum Error {
     Json(serde_json::Error),
     Yaml(yaml::Error),
+    MessagePack(msgpack::Error),
 }
 
 pub trait Input {
@@ -31,6 +34,7 @@ impl Input for InputFormat {
         match self {
             InputFormat::Json(json) => json.input(r).map_err(|e| Error::Json(e)),
             InputFormat::Yaml(yaml) => yaml.input(r).map_err(|e| Error::Yaml(e)),
+            InputFormat::MessagePack(msgpack) => msgpack.input(r).map_err(|e| Error::MessagePack(e)),
         }
     }
 }
@@ -41,6 +45,7 @@ impl rustc_serialize::Decodable for InputFormat {
             Ok(string) => match string.as_str() {
                 "json" => Ok(InputFormat::Json(json::Json::new())),
                 "yaml" => Ok(InputFormat::Yaml(yaml::Yaml::new())),
+                "msgpack" => Ok(InputFormat::MessagePack(msgpack::MessagePack::new())),
                 "" => Ok(InputFormat::Json(json::Json::new())),
                 _ => Err(d.error(format!("Unsupported input format \"{}\"", string).as_str())),
             },
