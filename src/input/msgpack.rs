@@ -2,7 +2,7 @@ use std::io::Read;
 use serde::de;
 use rmp_serde;
 use rmp_serde::decode::Deserializer;
-use serde_json::value::Value;
+use super::Value;
 
 #[derive(Debug)]
 pub struct MessagePack;

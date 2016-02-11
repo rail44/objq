@@ -8,9 +8,10 @@ extern crate rustc_serialize;
 extern crate yaml_rust;
 extern crate rmp_serde;
 
+pub use serde_json::value::Value;
+
 use std::io;
 use std::process;
-use serde_json::value::Value;
 use query::{Queryable, Query};
 use input::{InputFormat, Input};
 use output::{OutputFormat, Output};

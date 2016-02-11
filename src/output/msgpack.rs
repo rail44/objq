@@ -2,7 +2,7 @@ use std::io::Write;
 use rmp_serde;
 use rmp_serde::encode::Serializer;
 use serde::ser;
-use serde_json::Value;
+use super::Value;
 
 #[derive(Debug)]
 pub struct MessagePack;

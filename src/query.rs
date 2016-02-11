@@ -1,4 +1,4 @@
-use serde_json::value::Value;
+use super::Value;
 use rustc_serialize;
 
 peg! grammer(r#"

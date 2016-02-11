@@ -3,7 +3,7 @@ use std::io::Read;
 use std::collections::BTreeMap;
 use std::iter::FromIterator;
 use yaml_rust::{Yaml as YamlValue, YamlLoader};
-use serde_json::Value;
+use super::Value;
 
 #[derive(Debug)]
 pub struct Yaml;

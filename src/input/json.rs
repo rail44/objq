@@ -1,6 +1,6 @@
 use std::io::Read;
 use serde_json;
-use serde_json::value::Value;
+use super::Value;
 
 #[derive(Debug)]
 pub struct Json;

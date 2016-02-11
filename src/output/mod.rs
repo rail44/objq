@@ -1,6 +1,7 @@
 use std::io::Write;
 use rustc_serialize;
-use serde_json::value::Value;
+
+pub use super::Value;
 
 mod yaml;
 mod json;
