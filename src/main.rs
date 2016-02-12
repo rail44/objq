@@ -11,7 +11,6 @@ extern crate rmp_serde;
 pub use serde_json::value::Value;
 
 use std::io;
-use std::process;
 use query::{Queryable, Query};
 use input::{InputFormat, Input};
 use output::{OutputFormat, Output};
@@ -21,37 +20,38 @@ mod input;
 mod output;
 
 docopt!(Args derive Debug, "
-objq
+Converter/Querier for data format
 
-Usage:
-  objq [--input=<format>] [--output=<format>] [--query=<query>]
+Usage: objq [options]
+       objq (-h | --help)
 
 Options:
-  --query=<query>
-", flag_input: InputFormat, flag_output: OutputFormat, flag_query: Option<Query>);
-
+    -i <format>    (json | yaml | msgpack | ini | properties)
+    -o <format>    (json | yaml | msgpack)
+    -q <query>     Query for data, with format like '.foo.bar[0]'
+    -h, --help     Display this message
+", flag_i: InputFormat, flag_o: OutputFormat, flag_q: Option<Query>);
 
 fn main() {
     let args: Args = Args::docopt().decode().unwrap_or_else(|e| e.exit());
-    let obj: Value = args.flag_input.input(&mut io::stdin()).unwrap_or_else(|e| {
-        println!("{:?}", e);
-        process::exit(1);
+    let obj: Value = args.flag_i.input(&mut io::stdin()).unwrap_or_else(|e| {
+        panic!("{:?}", e);
     });
 
-    let value = match args.flag_query {
+    let value = match args.flag_q {
         Some(query) => match obj.query(&query) {
             Some(value) => value,
             None => {
-                println!("query \"{:?}\" does not match with given object", query);
-                process::exit(1);
+                panic!("query \"{:?}\" does not match with given object", query);
             },
         },
         None => &obj,
     };
-    match args.flag_output.output(&mut io::stdout(), value) {
+
+    match args.flag_o.output(&mut io::stdout(), value) {
         Ok(_) => {},
         Err(_) => {
-            process::exit(1);
+            panic!("");
         },
     }
 }
