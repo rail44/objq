@@ -14,6 +14,7 @@ pub enum OutputFormat {
     MessagePack(msgpack::MessagePack),
 }
 
+#[derive(Debug)]
 pub enum Error {
     Json(json::Error),
     Yaml(yaml::Error),

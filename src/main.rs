@@ -11,6 +11,7 @@ extern crate rmp_serde;
 pub use serde_json::value::Value;
 
 use std::io;
+use std::fs::File;
 use query::{Queryable, Query};
 use input::{InputFormat, Input};
 use output::{OutputFormat, Output};
@@ -27,31 +28,39 @@ Usage: objq [options]
 
 Options:
     -i <format>    (json | yaml | msgpack | ini | properties)
-    -o <format>    (json | yaml | msgpack)
+    -o <format>    (json | json:pretty | yaml | msgpack)
     -q <query>     Query for data, with format like '.foo.bar[0]'
+    -f <file>      Read from file instead of STDIN
     -h, --help     Display this message
 ", flag_i: InputFormat, flag_o: OutputFormat, flag_q: Option<Query>);
 
-fn main() {
-    let args: Args = Args::docopt().decode().unwrap_or_else(|e| e.exit());
-    let obj: Value = args.flag_i.input(&mut io::stdin()).unwrap_or_else(|e| {
-        panic!("{:?}", e);
-    });
+#[derive(Debug)]
+enum Error {
+    File(io::Error),
+    Input(input::Error),
+    Query,
+    Output(output::Error),
+}
 
-    let value = match args.flag_q {
-        Some(query) => match obj.query(&query) {
-            Some(value) => value,
-            None => {
-                panic!("query \"{:?}\" does not match with given object", query);
-            },
+fn cli(args: Args) -> Result<(), Error> {
+    let value = match args.flag_f.as_str() {
+        "" => try!(args.flag_i.input(&mut io::stdin()).map_err(|e| Error::Input(e))),
+        file_name => {
+            let mut file = try!(File::open(file_name).map_err(|e| Error::File(e)));
+            try!(args.flag_i.input(&mut file).map_err(|e| Error::Input(e)))
         },
-        None => &obj,
     };
-
-    match args.flag_o.output(&mut io::stdout(), value) {
-        Ok(_) => {},
-        Err(_) => {
-            panic!("");
+    let queried = match args.flag_q {
+        Some(query) => match value.query(&query) {
+            Some(queried) => queried,
+            None => return Err(Error::Query),
         },
-    }
+        None => &value,
+    };
+    args.flag_o.output(&mut io::stdout(), queried).map_err(|e| Error::Output(e))
+}
+
+fn main() {
+    let args: Args = Args::docopt().decode().unwrap_or_else(|e| e.exit());;
+    cli(args).unwrap_or_else(|e| panic!("{:?}", e))
 }
