@@ -2,11 +2,11 @@ use std::io;
 pub use super::Value;
 
 #[derive(Debug)]
-pub struct Ini;
+pub struct Properties;
 
-impl Ini {
-    pub fn new() -> Ini {
-        Ini
+impl Properties {
+    pub fn new() -> Properties {
+        Properties
     }
 }
 
@@ -20,23 +20,20 @@ whitespace = (" ")*
 
 #[pub]
 parse -> Value
-    = line_vec:line_vec linebreak+ section_vec:section**linebreak linebreak? { Value::Object(BTreeMap::from_iter(line_vec.into_iter().chain(section_vec))) }
-
-line_vec -> Vec<(String, Value)>
-    = line_vec:line**linebreak { line_vec.into_iter().filter(|opt| opt.is_some()).map(|some| some.unwrap()).collect() }
-
-section -> (String, Value)
-    = "[" section_name:section_name "]" linebreak* line_vec:line_vec { (section_name, Value::Object(BTreeMap::from_iter(line_vec.into_iter()))) }
-
-section_name -> String
-    = [^\]]+ { match_str.to_owned() }
+    = line_vec:line**linebreak linebreak? {
+        Value::Object(
+            BTreeMap::from_iter(
+                line_vec.into_iter().filter(|opt| opt.is_some()).map(|some| some.unwrap())
+            )
+        )
+    }
 
 line -> Option<(String, Value)>
     = k:key whitespace "=" whitespace v:value { Some((k, v)) }
-    / ";" [^\n]+ { None }
+    / "\#" [^\n]+ { None }
 
 key -> String
-    = [^\[ =\n]+ { match_str.to_owned() }
+    = [^ =\n]+ { match_str.to_owned() }
 
 value -> Value
     = [^\n]+ { Value::String(match_str.to_owned()) }
@@ -48,7 +45,7 @@ pub enum Error {
     Parse(grammer::ParseError),
 }
 
-impl super::Input for Ini {
+impl super::Input for Properties {
     type Error = Error;
 
     fn input<T: io::Read>(self, r: &mut T) -> Result<Value, Self::Error> {

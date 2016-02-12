@@ -8,6 +8,7 @@ mod json;
 mod yaml;
 mod msgpack;
 mod ini;
+mod properties;
 
 #[derive(Debug)]
 pub enum InputFormat {
@@ -15,6 +16,7 @@ pub enum InputFormat {
     Yaml(yaml::Yaml),
     MessagePack(msgpack::MessagePack),
     Ini(ini::Ini),
+    Properties(properties::Properties),
 }
 
 #[derive(Debug)]
@@ -23,6 +25,7 @@ pub enum Error {
     Yaml(yaml::Error),
     MessagePack(msgpack::Error),
     Ini(ini::Error),
+    Properties(properties::Error),
 }
 
 pub trait Input {
@@ -40,6 +43,7 @@ impl Input for InputFormat {
             InputFormat::Yaml(yaml) => yaml.input(r).map_err(|e| Error::Yaml(e)),
             InputFormat::MessagePack(msgpack) => msgpack.input(r).map_err(|e| Error::MessagePack(e)),
             InputFormat::Ini(ini) => ini.input(r).map_err(|e| Error::Ini(e)),
+            InputFormat::Properties(properties) => properties.input(r).map_err(|e| Error::Properties(e)),
         }
     }
 }
@@ -52,6 +56,7 @@ impl rustc_serialize::Decodable for InputFormat {
                 "yaml" => Ok(InputFormat::Yaml(yaml::Yaml::new())),
                 "msgpack" => Ok(InputFormat::MessagePack(msgpack::MessagePack::new())),
                 "ini" => Ok(InputFormat::Ini(ini::Ini::new())),
+                "properties" => Ok(InputFormat::Properties(properties::Properties::new())),
                 "" => Ok(InputFormat::Json(json::Json::new())),
                 _ => Err(d.error(format!("Unsupported input format \"{}\"", string).as_str())),
             },
