@@ -6,6 +6,7 @@ before_install:
 install: []
 script:
   - cargo build --release
+  - cp target/release/objq objq-x86_64-apple-darwin
 cache:
   directories:
   - "$HOME/.cargo"
@@ -14,7 +15,7 @@ deploy:
   provider: releases
   api_key:
     secure: VOQzgCSCpDpzneWV/jZtpvPrVo8D5VU1jNU22mh+xWmCHbxkqSj9aHlHY7voK+G22GiTu+01CxsDxYMdn4r3VZ3WGkKNYFivPVjCTe8ELwkQjHoEorUPh3Vzt8BTD0uF/l1xjGK/H6Nde3VGVg9T96f+czY5/VAW8a+mxDRmTmidO5QATi9i1FBX/pxVbZqiV6TcIllGU4Q7mg8wypKAM6U0NKlo3Tibh9tSCo4OSrsFLlxb2UbNo6iBCiaIIuXKeFbnNrnjufDUpn0iGVWZl6NKKbUF3lXBWULHKTmY08wS2SrxaJRCsBWxBGD1sSf+BpylHIfy3M6/8JFYP+kU8Lr7OajwQJbe2bO8h/zCTAtGA4ZLYEIH/Yl8I/qKqnet/n6xzlOxavtex0eCl49uiIzA32PZ6b3ABsMFdOjiRDg4qnvmlYSrE2ECb/DnTY6YlTDubP0kFQVmN/N9yXkp3yMpspVPYRjcoznPhP7x1GDxwSonvFNipe2nVRNEt48RtQ1PI8sxA4Vw+3mNssZ9YLYhwvIlVm686Rvuby/ANtxEyDKWyRLOYShTo5N4Oy1rwX9BX6uxAcelgW+OuBB5KgnompVRQGJi2IBwA40JSOdAFrf0l0k1P8d83R7F3JeK9p7NtYDSu8+kwGpuwWTyM5NKLFN/upUmrwNBwNQ5izk=
-  file: target/release/objq
+  file: objq-x86_64-apple-darwin
   skip_cleanup: true
   on:
     tags: true
